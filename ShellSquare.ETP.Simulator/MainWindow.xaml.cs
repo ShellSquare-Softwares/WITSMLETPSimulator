@@ -198,6 +198,8 @@ namespace ShellSquare.ETP.Simulator
             }
         }
 
+
+
         private async Task DisplayError(string message)
         {
             await MessageDisplay.Dispatcher.InvokeAsync(() =>
@@ -450,11 +452,9 @@ namespace ShellSquare.ETP.Simulator
                 int maxMessageRate = 1000;
                 await m_ConsumerHandler.Start(maxDataItems, maxMessageRate);
                 ////Till Here
-
                 List<string> channels = new List<string>();
                 channels.Add(DescribeEml.Text);
                 await m_ConsumerHandler.Describe(channels);
-
                 //await m_ProducerHandler.SendChannelMetadata(m_ConsumerHandler.Metadata);
 
             }
@@ -513,6 +513,7 @@ namespace ShellSquare.ETP.Simulator
                     //string message = $"\nRequest: [Protocol {} MessageType {}]";
                     //Message?.Invoke("", 0, TraceLevel.Info);
                     //await m_ProducerHandler.Connect(EtpUrl .Text , UserName .Text , UserPassword .Password , protocols, m_Token);
+
                     await m_ProducerHandler.SendChannelData(lstChannelStreamingInfo);
 
                 }
