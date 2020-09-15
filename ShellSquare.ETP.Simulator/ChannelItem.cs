@@ -49,5 +49,48 @@ namespace ShellSquare.ETP.Simulator
         public ChannelMetadataRecord ChannelMetadataRecord { get; set; }
 
 
+
+
+
+        public List<ChannelItem> ChannelItems { get; private set; }
+
+        public int Level { get; set; }
+
+        public int ChildrensCount { get; set; }
+        public bool HasChildren
+        {
+            get
+            {
+                if (ChildrensCount > 0 || ChildrensCount == -1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+
+
+        public bool ChildrensLoaded { get; set; }
+      
+   
+        public string Space
+        {
+            get
+            {
+                string space = "";
+                for (int i = 0; i < Level; i++)
+                {
+                    space = space + "   ";
+                }
+                return space;
+            }
+        }
+     
+
+
     }
 }

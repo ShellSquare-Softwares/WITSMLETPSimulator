@@ -125,9 +125,12 @@
     </ApplicationDefinition>
     <Compile Include="ChannelItem.cs" />
     <Compile Include="ConsumerHandler.cs" />
+    <Compile Include="ETPHandler.cs" />
     <Compile Include="EtpHelper.cs" />
     <Compile Include="NotifyObservableCollection.cs" />
     <Compile Include="ProducerHandler.cs" />
+    <Compile Include="RequestInformation.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="TimeSimulationHandler.cs" />
     <Compile Include="UserDetails.cs" />
     <Compile Include="Utilities.cs" />

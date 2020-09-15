@@ -22,10 +22,10 @@
             <Border Margin="5,0,10,0" Background="White" BorderBrush="#999" BorderThickness="1">
                 <ComboBox x:Name="EtpUrl" Margin="3,0,3,0" FontSize="12" VerticalAlignment="Center" Background="Transparent" 
                           BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" 
-                          SelectionChanged="EtpUrl_SelectionChanged" Text="wss://localhost/etp" ></ComboBox>
+                          SelectionChanged="EtpUrl_SelectionChanged" Text="wss://kogtpnext.southindia.cloudapp.azure.com" ></ComboBox>
             </Border>
 
-            <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center">User Name</TextBlock>
+            <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center" >User Name</TextBlock>
             <TextBox VerticalAlignment="Center" FontSize="12" Margin="5,0,10,0" x:Name="UserName" Width="130" Text=""></TextBox>
             <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center">Password</TextBlock>
             <PasswordBox VerticalAlignment="Center" FontSize="12" Margin="5,0,10,0" x:Name="UserPassword" Password="" Width="130" />
@@ -34,7 +34,7 @@
             <TextBox VerticalAlignment="Center" FontSize="12" Width="50" Text="10000" x:Name="MaxItems"/>
             <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,5,0">Polling rate (ms)</TextBlock>
             <TextBox VerticalAlignment="Center" FontSize="12" Text="1000" Width="50" x:Name="PollingRate"/>
-            
+
             <Button Style="{StaticResource defaultStyle}" Margin="10,0,0,0" Content="Connect" x:Name="ConnectButton"
                     Click="ConnectButton_Click"
                     VerticalAlignment="Center" HorizontalAlignment="Center" Width="80"  />
@@ -44,12 +44,22 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1">
             <Border Margin="5,0,10,0" Background="White" BorderBrush="#999" BorderThickness="1">
                 <ComboBox x:Name="DescribeEml" Margin="3,0,3,0" FontSize="12" VerticalAlignment="Center" Background="Transparent" 
-                          BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" Text="eml://witsml20" ></ComboBox>
+                          BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" Text="eml://witsml14/well(1023ba26-7222-43b0-9543-0f67b0c932df)" ></ComboBox>
             </Border>
 
             <Button Style="{StaticResource defaultStyle}" Margin="10,0,0,0" Content="Load" x:Name="LoadButton"
                     Click="LoadButton_Click"
                     VerticalAlignment="Center" HorizontalAlignment="Center" Width="80"  />
+
+            <Button Style="{StaticResource defaultStyle}" Margin="10,0,0,0" Content="Set Up" x:Name="SetUpButton"
+                    Click="SetUpButton_Click"
+                    VerticalAlignment="Center" HorizontalAlignment="Center" Width="80"  />
+
+
+            <!--<Button Style="{StaticResource defaultStyle}" Margin="10,0,0,0" Content="Describe" x:Name="Describe"
+                    Click="Describe_Click"
+                    VerticalAlignment="Center" HorizontalAlignment="Center" Width="80"  />-->
+
             <Button Style="{StaticResource defaultStyle}" Margin="10,0,0,0" Content="Simulate" x:Name="SimulateButton"
                     Click="SimulateButton_Click"
                     VerticalAlignment="Center" HorizontalAlignment="Center" Width="80"  />
@@ -75,7 +85,7 @@
                 </DataGrid.ContextMenu>
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
-                        <Style.Triggers>       
+                        <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="LightGreen" />
                             </Trigger>
@@ -83,7 +93,7 @@
 
                     </Style>
                 </DataGrid.RowStyle>
-                <DataGrid.Columns>                   
+                <DataGrid.Columns>
                     <DataGridTemplateColumn Header="" Width="30">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -97,7 +107,7 @@
                     <DataGridTextColumn Header="Description" Width="80" Binding="{Binding Description}" />
                     <DataGridTextColumn Header="Time" Width="50" Binding="{Binding HasTimeIndex}"  />
                     <DataGridTextColumn Header="Depth" Width="50" Binding="{Binding HasDepthIndex}" />
-                    
+
                     <DataGridTextColumn Header="Eml" Width="*" Binding="{Binding Eml}" />
                 </DataGrid.Columns>
             </DataGrid>
@@ -108,9 +118,9 @@
             <RichTextBox FontSize="12" Grid.Column="1" x:Name="MessageDisplay" VerticalContentAlignment="Top"
                          VerticalScrollBarVisibility="Auto" Padding="0,0,0,20"
                          Foreground="#555555" Grid.RowSpan="2" />
-            
+
         </Grid>
-        
-        
+
+
     </Grid>
 </Window>
