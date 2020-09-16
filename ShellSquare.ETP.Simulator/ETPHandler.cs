@@ -804,8 +804,6 @@ namespace ETPSimulatorApp
             //    });
             //    await Task.Delay(TimeSpan.FromSeconds(1));
             //}
-
-
         }
 
         /// <summary>
