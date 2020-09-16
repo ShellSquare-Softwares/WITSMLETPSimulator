@@ -19,6 +19,10 @@ using System.Windows.Shapes;
 using Energistics.Etp.v11.Protocol.ChannelStreaming;
 using System.Runtime.InteropServices;
 using Energistics.Etp.v11.Datatypes.ChannelData;
+using SuperSocket.SocketBase;
+using ETPSimulatorApp;
+using Energistics.Etp.v11.Datatypes;
+using Energistics.Etp.v11;
 
 namespace ShellSquare.ETP.Simulator
 {
@@ -31,9 +35,18 @@ namespace ShellSquare.ETP.Simulator
         private NotifyObservableCollection<ChannelItem> m_ChannelItems;
         private CancellationTokenSource m_Source;
         private CancellationToken m_Token;
-        ConsumerHandler m_ConsumerHandler;
+
+        ETPHandler m_ConsumerHandler;
+        ETPHandler m_ProducerHandler;
+
+        //ConsumerHandler m_ConsumerHandler;
+        //ProducerHandler m_ProducerHandler;
+
         private SolidColorBrush m_Brush;
         private List<UserDetails> userDataList = new List<UserDetails>();
+
+        public ChannelMetadata Metadata;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -45,13 +58,73 @@ namespace ShellSquare.ETP.Simulator
             m_Brush.Color = Color.FromRgb(133, 173, 173);
             LoadPreference();
 
-            m_MessageCount =  5000;
+            m_MessageCount = 5000;
 
             m_Source = new CancellationTokenSource();
             m_Token = m_Source.Token;
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+
+
+            UserName.Text = "anoop";
+            UserPassword.Password = "develop@123";
         }
+
+
+
+        private async Task ConsumerConnect()
+        {
+
+            try
+            {
+                string url = EtpUrl.Text;
+                string userName = UserName.Text;
+                string password = UserPassword.Password;
+                string startIndex = "200";
+                int maxDataItems = 10000;
+                int maxMessageRate = 1000;
+
+                string message = $"Connecting to {url}.\nuser name {userName}.";
+
+
+                var protocols = new List<SupportedProtocol>();
+
+                SupportedProtocol p;
+                p = ETPHandler.ToSupportedProtocol(Protocols.ChannelStreaming, "producer");
+                protocols.Add(p);
+
+                p = ETPHandler.ToSupportedProtocol(Protocols.Discovery, "store");
+                protocols.Add(p);
+
+
+                m_ConsumerHandler = new ETPHandler(startIndex);
+                //m_ConsumerHandler = new ConsumerHandler();
+
+
+                await Display(message);
+
+                await Task.Factory.StartNew(async () =>
+                {
+                    try
+                    {
+                        m_ConsumerHandler.Message = Message;
+                        m_ConsumerHandler.ChannelInfoReceived += ChannelMeta;
+                        await m_ConsumerHandler.Connect(url, userName, password, protocols, m_Token);
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                // await DisplayError(ex.Message);
+                // SetButtonStatus("Connect");
+            }
+        }
+
 
         private void EtpUrl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -121,7 +194,7 @@ namespace ShellSquare.ETP.Simulator
 
             if (string.IsNullOrWhiteSpace(EtpUrl.Text))
             {
-                EtpUrl.Text = "wss://localhost/etp";
+                EtpUrl.Text = "wss://kogtpnext.southindia.cloudapp.azure.com";
             }
         }
 
@@ -166,6 +239,8 @@ namespace ShellSquare.ETP.Simulator
                 MessageDisplay.ScrollToEnd();
             });
         }
+
+
 
 
         private async Task Display(string message, double timeTaken, TraceLevel level)
@@ -216,10 +291,13 @@ namespace ShellSquare.ETP.Simulator
         private void ChannelMeta(ChannelMetadata metadata)
         {
 
+            m_ConsumerHandler.Metadata = metadata;
+
             Channels.Dispatcher.InvokeAsync(() =>
             {
                 try
                 {
+
                     m_ChannelItems.Clear();
                     foreach (var c in metadata.Channels)
                     {
@@ -229,7 +307,7 @@ namespace ShellSquare.ETP.Simulator
 
                         foreach (var index in c.Indexes)
                         {
-                            if(index.IndexType == Energistics.Etp.v11.Datatypes.ChannelData.ChannelIndexTypes.Depth)
+                            if (index.IndexType == Energistics.Etp.v11.Datatypes.ChannelData.ChannelIndexTypes.Depth)
                             {
                                 hasDepth = true;
                             }
@@ -262,65 +340,104 @@ namespace ShellSquare.ETP.Simulator
                 }
             });
 
-            
+
         }
 
 
-        private async void ConnectButton_Click(object sender, RoutedEventArgs e)
+        private async Task ProducerConnect()
         {
             try
             {
                 string url = EtpUrl.Text;
                 string userName = UserName.Text;
                 string password = UserPassword.Password;
-                int maxDataItems = int.Parse(MaxItems.Text);
-                int maxMessageRate = int.Parse(PollingRate.Text);
-
+                string startIndex = "200";
                 string message = $"Connecting to {url}.\nuser name {userName}.";
 
-                m_ConsumerHandler = new ConsumerHandler();
-                m_ConsumerHandler.Message = Message;
-                m_ConsumerHandler.ChannelInfoReceived += ChannelMeta;
-                await m_ConsumerHandler.Connect(url, userName, password, m_Token);
 
-                SaveToPreference(url, userName, password);
+                var protocols = new List<SupportedProtocol>();
+
+                SupportedProtocol p;
+                p = ETPHandler.ToSupportedProtocol(Protocols.ChannelStreaming, "consumer");
+                protocols.Add(p);
+
+                p = ETPHandler.ToSupportedProtocol(Protocols.Discovery, "store");
+                protocols.Add(p);
+
+
+                m_ProducerHandler = new ETPHandler(startIndex);
+
+
+                Display(message);
+
+                await Task.Factory.StartNew(async () =>
+                {
+                    try
+                    {
+                        m_ProducerHandler.Message = Message;
+                        await m_ProducerHandler.Connect(url, userName, password, protocols, m_Token);
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                });
+
             }
             catch (Exception ex)
             {
-                await DisplayError(ex.Message);
+                // await DisplayError(ex.Message);
+                // SetButtonStatus("Connect");
             }
         }
 
+        private async void ConnectButton_Click(object sender, RoutedEventArgs e)
+        {
 
+            await ConsumerConnect();
+            await ProducerConnect();
+
+            //try
+            //{
+            //    string url = EtpUrl.Text;
+            //    string userName = UserName.Text;
+            //    string password = UserPassword.Password;
+            //    int maxDataItems = int.Parse(MaxItems.Text);
+            //    int maxMessageRate = int.Parse(PollingRate.Text);
+
+            //    string message = $"Connecting to {url}.\nuser name {userName}.";
+
+            //    m_ConsumerHandler = new ConsumerHandler();
+            //    m_ConsumerHandler.Message = Message;
+            //    m_ConsumerHandler.ChannelInfoReceived += ChannelMeta;
+            //    await m_ConsumerHandler.Connect(url, userName, password, m_Token);
+
+
+            //    m_ProducerHandler = new ProducerHandler();
+            //    m_ProducerHandler.Message = Message;
+            //    await m_ProducerHandler.Connect(url, userName, password, m_Token);
+            //    SaveToPreference(url, userName, password);
+            //}
+            //catch (Exception ex)
+            //{
+            //    await DisplayError(ex.Message);
+            //}
+        }
+
+
+        private void ChannelStreamingInfo(ChannelMetadata Channel)
+        {
+
+            string a = "";
+        }
         private async void Message(string message, double timeTaken, TraceLevel level = TraceLevel.Info)
         {
             await Display(message, timeTaken, level);
         }
 
-
-
         private async void LoadButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if(m_ConsumerHandler == null)
-                {
-                    await DisplayError("Use connect button to connect first");
-                    return;
-                }
-
-                List<string> channels = new List<string>();
-                channels.Add(DescribeEml.Text);
-
-                m_ConsumerHandler.Describe(channels);
-            }
-            catch (Exception ex)
-            {
-               await DisplayError(ex.Message);
-            }
-        }
-
-        private async void SimulateButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -330,11 +447,37 @@ namespace ShellSquare.ETP.Simulator
                     return;
                 }
 
+                //new Code
+                int maxDataItems = 10000;
+                int maxMessageRate = 1000;
+                await m_ConsumerHandler.Start(maxDataItems, maxMessageRate);
+                ////Till Here
+                List<string> channels = new List<string>();
+                channels.Add(DescribeEml.Text);
+                await m_ConsumerHandler.Describe(channels);
+                //await m_ProducerHandler.SendChannelMetadata(m_ConsumerHandler.Metadata);
 
+            }
+            catch (Exception ex)
+            {
+                await DisplayError(ex.Message);
+            }
+        }
+        private async void SimulateButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (m_ProducerHandler == null)
+                {
+                    await DisplayError("Use connect button to connect first");
+                    return;
+                }
                 List<ChannelMetadataRecord> timeRecords = new List<ChannelMetadataRecord>();
                 List<ChannelMetadataRecord> depthRecords = new List<ChannelMetadataRecord>();
                 List<ChannelMetadataRecord> timeAndDepthRecords = new List<ChannelMetadataRecord>();
-
+                ChannelStreamingInfo channelStreamingInfo = new ChannelStreamingInfo();
+                List<ChannelStreamingInfo> lstChannelStreamingInfo = new List<ChannelStreamingInfo>();
+                m_ProducerHandler.ChannelInfoReceived += ChannelStreamingInfo;
                 foreach (var item in m_ChannelItems)
                 {
                     if (item.Selected)
@@ -345,22 +488,35 @@ namespace ShellSquare.ETP.Simulator
                         }
                         else if (item.HasTimeIndex)
                         {
+                            ///??Only for time??
+                            channelStreamingInfo = new ChannelStreamingInfo()
+                            {
+                                ChannelId = item.ChannelMetadataRecord.ChannelId,
+                                StartIndex = new StreamingStartIndex()
+                                {
+                                    Item = null
+                                },
+                                ReceiveChangeNotification = true
+                            };
                             timeRecords.Add(item.ChannelMetadataRecord);
                         }
                         else if (item.HasDepthIndex)
                         {
                             depthRecords.Add(item.ChannelMetadataRecord);
                         }
+                        lstChannelStreamingInfo.Add(channelStreamingInfo);
                     }
                 }
 
-                if(timeRecords.Count > 0)
+                if (timeRecords.Count > 0)
                 {
+                    //string message = $"\nRequest: [Protocol {} MessageType {}]";
+                    //Message?.Invoke("", 0, TraceLevel.Info);
+                    //await m_ProducerHandler.Connect(EtpUrl .Text , UserName .Text , UserPassword .Password , protocols, m_Token);
+
+                    await m_ProducerHandler.SendChannelData(lstChannelStreamingInfo);
 
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -405,8 +561,18 @@ namespace ShellSquare.ETP.Simulator
             {
                 item.Selected = false;
             }
-
             m_ChannelItems.EndChange();
+        }
+        private async void SetUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            await m_ProducerHandler.SendChannelMetadata(m_ConsumerHandler.Metadata);
+        }
+        private async void Describe_Click(object sender, RoutedEventArgs e)
+        {
+            // List<string> url = new List<string>();
+            // url.Add(DescribeEml.Text);
+
+            //await  m_ConsumerHandler.Describe(url);
         }
     }
 }
