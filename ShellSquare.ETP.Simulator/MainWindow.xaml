@@ -22,7 +22,7 @@
             <Border Margin="5,0,10,0" Background="White" BorderBrush="#999" BorderThickness="1">
                 <ComboBox x:Name="EtpUrl" Margin="3,0,3,0" FontSize="12" VerticalAlignment="Center" Background="Transparent" 
                           BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" 
-                          SelectionChanged="EtpUrl_SelectionChanged" Text="wss://kogtpnext.southindia.cloudapp.azure.com" ></ComboBox>
+                          SelectionChanged="EtpUrl_SelectionChanged" Text="" ></ComboBox>
             </Border>
 
             <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center" >User Name</TextBlock>

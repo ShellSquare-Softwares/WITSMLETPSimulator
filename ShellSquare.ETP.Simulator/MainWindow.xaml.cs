@@ -192,10 +192,10 @@ namespace ShellSquare.ETP.Simulator
             }
             EtpUrl.ItemsSource = detail;
 
-            if (string.IsNullOrWhiteSpace(EtpUrl.Text))
-            {
-                EtpUrl.Text = "wss://kogtpnext.southindia.cloudapp.azure.com";
-            }
+            //if (string.IsNullOrWhiteSpace(EtpUrl.Text))
+            //{
+            //    EtpUrl.Text = "";
+            //}
         }
 
 
