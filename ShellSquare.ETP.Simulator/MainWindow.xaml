@@ -22,13 +22,13 @@
             <Border Margin="5,0,10,0" Background="White" BorderBrush="#999" BorderThickness="1">
                 <ComboBox x:Name="EtpUrl" Margin="3,0,3,0" FontSize="12" VerticalAlignment="Center" Background="Transparent" 
                           BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" 
-                          SelectionChanged="EtpUrl_SelectionChanged" Text="" ></ComboBox>
+                          SelectionChanged="EtpUrl_SelectionChanged" Text="ws://localhost/Witsml.Web/api/etp" ></ComboBox>
             </Border>
 
             <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center" >User Name</TextBlock>
-            <TextBox VerticalAlignment="Center" FontSize="12" Margin="5,0,10,0" x:Name="UserName" Width="130" Text=""></TextBox>
-            <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center">Password</TextBlock>
-            <PasswordBox VerticalAlignment="Center" FontSize="12" Margin="5,0,10,0" x:Name="UserPassword" Password="" Width="130" />
+            <TextBox VerticalAlignment="Center" FontSize="12" Margin="5,0,10,0" x:Name="UserName" Width="130" Text="bjetpservice@bjservices.com"></TextBox>
+            <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center" Text="">Password</TextBlock>
+            <PasswordBox VerticalAlignment="Center" FontSize="12" Margin="5,0,10,0" x:Name="UserPassword" Password="BJEtp@123" Width="130" />
 
             <TextBlock Foreground="#666" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,5,0">Maximum items</TextBlock>
             <TextBox VerticalAlignment="Center" FontSize="12" Width="50" Text="10000" x:Name="MaxItems"/>
@@ -44,7 +44,7 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1">
             <Border Margin="5,0,10,0" Background="White" BorderBrush="#999" BorderThickness="1">
                 <ComboBox x:Name="DescribeEml" Margin="3,0,3,0" FontSize="12" VerticalAlignment="Center" Background="Transparent" 
-                          BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" Text="eml://witsml14/well(1023ba26-7222-43b0-9543-0f67b0c932df)" ></ComboBox>
+                          BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" Text="eml://witsml20/Well(ace3415e-49bc-cf79-e873-116ea7d6993a)/Wellbore(836299e3-a204-11d2-890c-00b9db452a6f)/Log(852fc656-40fb-adba-873c-a4202e4859be)/ChannelSet(b966fa4d-bb49-408a-9c8d-45d20f24eeb6)" ></ComboBox>
             </Border>
 
             <Button Style="{StaticResource defaultStyle}" Margin="10,0,0,0" Content="Load" x:Name="LoadButton"

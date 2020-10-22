@@ -94,7 +94,7 @@ namespace ETPSimulatorApp
 
 
         public async Task Connect(string url, string username, string password, List<SupportedProtocol> protocols, CancellationToken token)
-         {
+        {
             try
             {
                 var auth = Authorization.Basic(username, password);
@@ -191,7 +191,7 @@ namespace ETPSimulatorApp
             header.CorrelationId = 10;
 
             var channelDescribe = new ChannelDescribe()
-            {     
+            {
                 Uris = uris
             };
 
@@ -205,7 +205,7 @@ namespace ETPSimulatorApp
 
         public async Task Start(int maxDataItems, int maxMessageRate)
         {
-            
+
             MessageHeader header = new MessageHeader();
             header.Protocol = (int)Protocols.ChannelStreaming;
             header.MessageType = 0;
@@ -217,7 +217,7 @@ namespace ETPSimulatorApp
             handler.Start(maxDataItems, maxMessageRate);
             string message = $"\nRequest: [Protocol {Protocols.ChannelStreaming} MessageType {0}]";
 
-            Message?.Invoke(message, 0 , TraceLevel.Info);
+            Message?.Invoke(message, 0, TraceLevel.Info);
 
         }
 
@@ -704,10 +704,10 @@ namespace ETPSimulatorApp
             Message?.Invoke(message + "\nChannel Data processed " + message.ToString(), 0, TraceLevel.Info);
         }
 
-        public  async void SendChannelDataActual(List<ChannelStreamingInfo> lstChannelsPublic)
+        public async void SendChannelDataActual(List<ChannelStreamingInfo> lstChannelsPublic)
         {
             var handler = m_client.Handler<IChannelStreamingProducer>();
-            index = index + 1;
+            //index = index + 1;
             await Task.Run(async () =>
             {
                 MessageHeader header = new MessageHeader();
@@ -725,16 +725,16 @@ namespace ETPSimulatorApp
                 foreach (var item in lstChannelsPublic)
                 {
                     DataItem d = new DataItem();
-                        //d.ChannelId = item.ChannelId;
-                        TimeSpan t = (receivedTime - m_Epoch);
-                        //DataItem d = new DataItem();
-                        d.ChannelId = item.ChannelId;
-                    index = (long)t.TotalMilliseconds;
+                    //d.ChannelId = item.ChannelId;
+                    TimeSpan t = (receivedTime - m_Epoch);
 
+                    //DataItem d = new DataItem();
+                    d.ChannelId = item.ChannelId;
+                    index = (long)t.TotalMilliseconds * 1000;//(long)t.TotalMilliseconds;
                     d.Indexes = new List<long>();
                     d.Indexes.Add(index);
                     d.Value = new DataValue();
-                    d.Value.Item = random.Next();
+                    d.Value.Item = Math.Round(random.NextDouble() * 1000, 2);//random.Next();
                     d.ValueAttributes = new List<DataAttribute>();
                     recordData.Data.Add(d);
                 }
@@ -748,7 +748,7 @@ namespace ETPSimulatorApp
 
         private async void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-             SendChannelDataActual(lstChannelsPublic);
+            SendChannelDataActual(lstChannelsPublic);
             // This will tricker every second
         }
 
@@ -868,7 +868,7 @@ namespace ETPSimulatorApp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected void HandleProtocolException (object sender , ProtocolEventArgs<IProtocolException> e)
+        protected void HandleProtocolException(object sender, ProtocolEventArgs<IProtocolException> e)
         {
             var receivedTime = DateTime.UtcNow;
             if (e.Header.MessageType == 1000)
@@ -889,7 +889,7 @@ namespace ETPSimulatorApp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected void HandleOpenSession (object sender, ProtocolEventArgs<OpenSession> e )
+        protected void HandleOpenSession(object sender, ProtocolEventArgs<OpenSession> e)
         {
             var receivedTime = DateTime.UtcNow;
             lock (m_ConnectionLock)
@@ -912,7 +912,7 @@ namespace ETPSimulatorApp
             ChannelDataReceived?.Invoke(e.Message.Data);
         }
 
-        protected void HandleAcknowledge (object sender , ProtocolEventArgs<IAcknowledge> e)
+        protected void HandleAcknowledge(object sender, ProtocolEventArgs<IAcknowledge> e)
         {
 
         }

@@ -56,7 +56,7 @@ namespace ShellSquare.ETP.Simulator
 
             m_Brush = new SolidColorBrush();
             m_Brush.Color = Color.FromRgb(133, 173, 173);
-            LoadPreference();
+            //LoadPreference();
 
             m_MessageCount = 5000;
 
@@ -64,10 +64,6 @@ namespace ShellSquare.ETP.Simulator
             m_Token = m_Source.Token;
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-
-
-            UserName.Text = "anoop";
-            UserPassword.Password = "develop@123";
         }
 
 
@@ -396,6 +392,15 @@ namespace ShellSquare.ETP.Simulator
         private async void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
 
+            try
+            {
+                SaveToPreference(EtpUrl.Text, UserName.Text, UserPassword.Password);
+            }
+            catch
+            {
+
+            }
+
             await ConsumerConnect();
             await ProducerConnect();
 
@@ -507,15 +512,13 @@ namespace ShellSquare.ETP.Simulator
                         lstChannelStreamingInfo.Add(channelStreamingInfo);
                     }
                 }
-
                 if (timeRecords.Count > 0)
                 {
                     //string message = $"\nRequest: [Protocol {} MessageType {}]";
                     //Message?.Invoke("", 0, TraceLevel.Info);
                     //await m_ProducerHandler.Connect(EtpUrl .Text , UserName .Text , UserPassword .Password , protocols, m_Token);
 
-                    await m_ProducerHandler.SendChannelData(lstChannelStreamingInfo);
-
+                    await m_ProducerHandler.SendChannelData(lstChannelStreamingInfo);   
                 }
             }
             catch (Exception ex)
