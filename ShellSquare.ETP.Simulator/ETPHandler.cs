@@ -729,7 +729,7 @@ namespace ETPSimulatorApp
                         TimeSpan t = (receivedTime - m_Epoch);
                         //DataItem d = new DataItem();
                         d.ChannelId = item.ChannelId;
-                    index = (long)t.TotalMilliseconds;
+                    index = (long)t.TotalMilliseconds*1000;
 
                     d.Indexes = new List<long>();
                     d.Indexes.Add(index);

@@ -44,7 +44,7 @@
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="1">
             <Border Margin="5,0,10,0" Background="White" BorderBrush="#999" BorderThickness="1">
                 <ComboBox x:Name="DescribeEml" Margin="3,0,3,0" FontSize="12" VerticalAlignment="Center" Background="Transparent" 
-                          BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" Text="eml://witsml14/well(1023ba26-7222-43b0-9543-0f67b0c932df)" ></ComboBox>
+                          BorderBrush="Transparent" BorderThickness="0" Padding="5,0,5,0"  Width="280" IsEditable="True" Text="" ></ComboBox>
             </Border>
 
             <Button Style="{StaticResource defaultStyle}" Margin="10,0,0,0" Content="Load" x:Name="LoadButton"
