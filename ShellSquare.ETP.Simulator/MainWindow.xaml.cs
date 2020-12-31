@@ -66,8 +66,9 @@ namespace ShellSquare.ETP.Simulator
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
 
-            UserName.Text = "anoop";
-            UserPassword.Password = "develop@123";
+            UserName.Text = "hari.admin@drillview.com";
+            UserPassword.Password = "123456789";
+            EtpUrl.Text = "ws://localhost/Witsml.Web/api/etp";
         }
 
 
